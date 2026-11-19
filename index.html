@@ -1,27 +1,549 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <title>&lt;model-viewer&gt; template</title>
-    <meta charset="utf-8">
-    <meta name="description" content="&lt;model-viewer&gt; template">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link type="text/css" href="./styles.css" rel="stylesheet"/>
-  </head>
-  <body>
-    <!-- <model-viewer> HTML element -->
-    <model-viewer src="model.glb" ar ar-modes="scene-viewer webxr quick-look" camera-controls tone-mapping="neutral" poster="poster.webp" shadow-intensity="1">
-      <div class="progress-bar hide" slot="progress-bar">
-          <div class="update-bar"></div>
-      </div>
-      <button slot="ar-button" id="ar-button">
-          View in your space
-      </button>
-      <div id="ar-prompt">
-          <img src="ar_hand_prompt.png">
-      </div>
-    </model-viewer>  
-    <script src="script.js"></script>
-    <!-- Loads <model-viewer> for browsers: -->
-    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.4.0/model-viewer.min.js"></script>
-  </body>
+<!-- ... existing code ... -->
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- تحميل المكون الرسمي Google Model Viewer v4.0.0 لدعم iOS Quick Look و Android Scene Viewer / WebXR -->
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js"></script>
+
+    <style>
+        /* إعدادات الخطوط الأساسية */
+        body {
+            font-family: 'Cairo', 'Inter', sans-serif;
+            background-color: #f8fafc;
+            color: #0f172a;
+        }
+<!-- ... existing code ... -->
+                <div>
+                    <h1 class="text-lg sm:text-xl font-bold text-slate-900 leading-tight">عارض نماذج Google 3D & AR</h1>
+                    <p class="text-xs text-slate-500 hidden sm:block">دعم متكامل لأنظمة <span class="font-bold text-slate-700">iOS (Quick Look)</span> و <span class="font-bold text-slate-700">Android (Scene Viewer / WebXR)</span></p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-2">
+                <span id="os-detect-badge" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-blue-50 text-blue-700 border border-blue-200">
+                    <span class="w-2 h-2 rounded-full bg-blue-600 animate-pulse"></span>
+                    <span id="os-detect-text">جاري فحص النظام...</span>
+                </span>
+            </div>
+        </div>
+    </header>
+<!-- ... existing code ... -->
+                        <model-viewer
+                            id="ar-model-viewer"
+                            src="https://modelviewer.dev/shared-assets/models/Astronaut.glb"
+                            ios-src="https://modelviewer.dev/shared-assets/models/Astronaut.usdz"
+                            alt="نموذج ثلاثي الأبعاد تفاعلي مع دعم الواقع المعزز على iOS و Android"
+                            ar
+                            ar-modes="webxr scene-viewer quick-look"
+                            ar-scale="auto"
+                            ar-placement="floor"
+                            camera-controls
+                            tone-mapping="neutral"
+                            shadow-intensity="1"
+                            exposure="1"
+                            auto-rotate
+                            touch-action="pan-y"
+                        >
+                            <!-- شريط التحميل الرسمي (Progress Bar Slot) -->
+                            <div class="progress-bar" slot="progress-bar">
+                                <div class="update-bar" id="progress-update-bar"></div>
+                            </div>
+
+                            <!-- زر تفعيل الواقع المعزز الرسمي (AR Button Slot) -->
+                            <button slot="ar-button" id="ar-button" type="button">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10l-2 1m0 0l-2-1m2 1v2.5M20 7l-2 1m2-1l-2-1m2 1v2.5M14 4l-2-1-2 1M4 7l2-1M4 7l2 1M4 7v2.5M12 21l-2-1m2 1l2-1m-2 1v-2.5M6 18l-2-1v-2.5M18 18l-2-1v-2.5"/>
+                                </svg>
+                                <span>عرض في مساحتك - AR</span>
+                            </button>
+
+                            <!-- موجه حركة اليد في وضع الواقع المعزز الرسمي (AR Prompt) -->
+                            <div id="ar-prompt">
+                                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <circle cx="12" cy="12" r="10" fill="white" fill-opacity="0.9" stroke="#2563EB" stroke-width="2"/>
+                                    <path d="M9 12L12 9M12 9L15 12M12 9V16" stroke="#2563EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </div>
+                        </model-viewer>
+                    </div>
+
+                    <!-- بطاقة حالة التوافق المباشر لنظامي iOS و Android -->
+                    <div class="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                        <div class="p-3 rounded-xl bg-slate-50 border border-slate-200/80 flex items-center justify-between">
+                            <div class="flex items-center gap-2.5">
+                                <div class="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-xs font-ltr">
+                                    🤖
+                                </div>
+                                <div>
+                                    <div class="text-xs font-bold text-slate-900">Android (Scene Viewer / WebXR)</div>
+                                    <div id="android-status-text" class="text-[11px] text-emerald-700 font-semibold">جاهز بصيغة GLB</div>
+                                </div>
+                            </div>
+                            <span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 text-[10px] font-ltr font-bold">.GLB</span>
+                        </div>
+
+                        <div class="p-3 rounded-xl bg-slate-50 border border-slate-200/80 flex items-center justify-between">
+                            <div class="flex items-center gap-2.5">
+                                <div class="w-8 h-8 rounded-lg bg-slate-200 text-slate-800 flex items-center justify-center font-bold text-xs font-ltr">
+                                    
+                                </div>
+                                <div>
+                                    <div class="text-xs font-bold text-slate-900">iOS (Apple AR Quick Look)</div>
+                                    <div id="ios-status-text" class="text-[11px] text-blue-700 font-semibold">متصل بملف USDZ مخصص</div>
+                                </div>
+                            </div>
+                            <span id="ios-badge-format" class="px-2 py-0.5 rounded bg-blue-100 text-blue-800 text-[10px] font-ltr font-bold">.USDZ</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+<!-- ... existing code ... -->
+                    <button onclick="switchTab('settings')" id="tab-btn-settings" class="tab-btn py-2.5 px-3 rounded-xl text-xs sm:text-sm font-bold transition-all text-slate-600 hover:bg-slate-100">
+                        إعدادات AR والعرض
+                    </button>
+                    <button onclick="switchTab('code')" id="tab-btn-code" class="tab-btn py-2.5 px-3 rounded-xl text-xs sm:text-sm font-bold transition-all text-slate-600 hover:bg-slate-100">
+                        كود القالب (HTML)
+                    </button>
+                </div>
+
+                <!-- التبويب الأول: اختيار النماذج أو رفع ملفات Android (.glb) و iOS (.usdz) -->
+                <div id="tab-panel-models" class="tab-panel bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-5">
+                    <div>
+                        <h3 class="text-base font-bold text-slate-900 mb-1">1. نماذج جاهزة تدعم iOS و Android معاً</h3>
+                        <p class="text-xs text-slate-500 mb-3">تحتوي هذه النماذج على ملفات <code class="font-ltr text-blue-600">.glb</code> للأندرويد و <code class="font-ltr text-blue-600">.usdz</code> للآيفون:</p>
+                        
+                        <div class="grid grid-cols-2 gap-2.5">
+                            <button onclick="selectPresetModel('astronaut')" id="preset-astronaut" class="preset-card active-preset text-right p-3 rounded-xl border-2 border-blue-600 bg-blue-50/50 transition-all">
+                                <div class="text-lg mb-1">🧑‍🚀</div>
+                                <div class="font-bold text-sm text-slate-900">رائد الفضاء</div>
+                                <div class="text-[10px] text-slate-500 font-ltr">GLB + USDZ</div>
+                            </button>
+
+                            <button onclick="selectPresetModel('armstrong')" id="preset-armstrong" class="preset-card text-right p-3 rounded-xl border border-slate-200 hover:border-blue-400 bg-white transition-all">
+                                <div class="text-lg mb-1">🛸</div>
+                                <div class="font-bold text-sm text-slate-900">بدلة أرمسترونغ</div>
+                                <div class="text-[10px] text-slate-500 font-ltr">GLB + USDZ</div>
+                            </button>
+
+                            <button onclick="selectPresetModel('horse')" id="preset-horse" class="preset-card text-right p-3 rounded-xl border border-slate-200 hover:border-blue-400 bg-white transition-all">
+                                <div class="text-lg mb-1">🐎</div>
+                                <div class="font-bold text-sm text-slate-900">حصان متحرك</div>
+                                <div class="text-[10px] text-slate-500 font-ltr">GLB + USDZ</div>
+                            </button>
+
+                            <button onclick="selectPresetModel('chair')" id="preset-chair" class="preset-card text-right p-3 rounded-xl border border-slate-200 hover:border-blue-400 bg-white transition-all">
+                                <div class="text-lg mb-1">🪑</div>
+                                <div class="font-bold text-sm text-slate-900">كرسي عصري</div>
+                                <div class="text-[10px] text-slate-500 font-ltr">GLB + USDZ</div>
+                            </button>
+                        </div>
+                    </div>
+
+                    <hr class="border-slate-100">
+
+                    <!-- قسم ملفات Android / Web (.GLB) -->
+                    <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80 space-y-2.5">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-bold text-slate-900 flex items-center gap-1.5">
+                                <span>🤖</span>
+                                <span>ملف Android & Web الأساسي (<code class="font-ltr text-emerald-700">src</code>)</span>
+                            </span>
+                            <label class="text-[11px] font-bold text-blue-600 hover:text-blue-700 cursor-pointer underline">
+                                رفع ملف .GLB
+                                <input type="file" id="glb-file-input" accept=".glb,.gltf" class="hidden" onchange="handleLocalGlbUpload(event)">
+                            </label>
+                        </div>
+                        <div class="flex gap-2">
+                            <input type="url" id="glb-url-input" placeholder="https://example.com/model.glb" class="flex-1 font-ltr text-xs px-3 py-2 rounded-lg border border-slate-300 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <button onclick="applyCustomModels()" class="px-3.5 py-2 bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold rounded-lg transition-colors shrink-0">
+                                تطبيق
+                            </button>
+                        </div>
+                        <div id="glb-file-label" class="text-[11px] text-slate-500 truncate font-ltr">الحالي: Astronaut.glb</div>
+                    </div>
+
+                    <!-- قسم ملفات iOS Quick Look (.USDZ) -->
+                    <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80 space-y-2.5">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-bold text-slate-900 flex items-center gap-1.5">
+                                <span></span>
+                                <span>ملف iOS Quick Look (<code class="font-ltr text-blue-700">ios-src</code>)</span>
+                            </span>
+                            <label class="text-[11px] font-bold text-blue-600 hover:text-blue-700 cursor-pointer underline">
+                                رفع ملف .USDZ
+                                <input type="file" id="usdz-file-input" accept=".usdz" class="hidden" onchange="handleLocalUsdzUpload(event)">
+                            </label>
+                        </div>
+                        <div class="flex gap-2">
+                            <input type="url" id="usdz-url-input" placeholder="https://example.com/model.usdz (اختياري)" class="flex-1 font-ltr text-xs px-3 py-2 rounded-lg border border-slate-300 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <button onclick="applyCustomModels()" class="px-3.5 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-lg transition-colors shrink-0">
+                                ربط
+                            </button>
+                        </div>
+                        <div id="usdz-file-label" class="text-[11px] text-slate-500 truncate font-ltr">الحالي: Astronaut.usdz</div>
+                        <p class="text-[11px] text-slate-500 leading-relaxed">
+                            💡 <strong>ميزة ذكية:</strong> إذا تركت حقل <code class="font-ltr">ios-src</code> فارغاً، يقوم <code class="font-ltr">&lt;model-viewer&gt;</code> تلقائياً بتحويل ملف <code class="font-ltr">.glb</code> إلى <code class="font-ltr">.usdz</code> في المتصفح على أجهزة iOS! أما إرفاق ملف <code class="font-ltr">.usdz</code> مخصص فيضمن أعلى دقة للخامات والحركات على آيفون.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- التبويب الثاني: إعدادات الواقع المعزز (AR) والإضاءة والكاميرا -->
+                <div id="tab-panel-settings" class="tab-panel hidden bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-5">
+                    <h3 class="text-base font-bold text-slate-900">إعدادات الواقع المعزز (iOS & Android)</h3>
+
+                    <!-- إعدادات سلوك الواقع المعزز AR -->
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label for="select-ar-placement" class="block text-xs font-bold text-slate-700 mb-1.5">مكان التثبيت (ar-placement)</label>
+                            <select id="select-ar-placement" onchange="updateViewerAttributes()" class="w-full text-xs px-3 py-2.5 rounded-xl border border-slate-300 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 font-semibold">
+                                <option value="floor" selected>على الأرضية (floor)</option>
+                                <option value="wall">على الحائط (wall)</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label for="select-ar-scale" class="block text-xs font-bold text-slate-700 mb-1.5">تحجيم المجسم (ar-scale)</label>
+                            <select id="select-ar-scale" onchange="updateViewerAttributes()" class="w-full text-xs px-3 py-2.5 rounded-xl border border-slate-300 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 font-semibold">
+                                <option value="auto" selected>تلقائي قابل للتكبير (auto)</option>
+                                <option value="fixed">حجم حقيقي ثابت 1:1 (fixed)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- خيارات التبديل (Toggles) -->
+                    <div class="space-y-2.5">
+                        <label class="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200/80 cursor-pointer">
+                            <div>
+                                <div class="text-sm font-bold text-slate-800">الدوران التلقائي (auto-rotate)</div>
+                                <div class="text-xs text-slate-500">تدوير النموذج ببطء تلقائياً في المعاينة</div>
+                            </div>
+                            <input type="checkbox" id="toggle-autorotate" checked onchange="updateViewerAttributes()" class="w-5 h-5 rounded text-blue-600 focus:ring-blue-500">
+                        </label>
+
+                        <label class="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200/80 cursor-pointer">
+                            <div>
+                                <div class="text-sm font-bold text-slate-800">التحكم بالكاميرا (camera-controls)</div>
+                                <div class="text-xs text-slate-500">السماح للمستخدم بالتدوير والتكبير باللمس</div>
+                            </div>
+                            <input type="checkbox" id="toggle-controls" checked onchange="updateViewerAttributes()" class="w-5 h-5 rounded text-blue-600 focus:ring-blue-500">
+                        </label>
+                    </div>
+
+                    <!-- شرائح التمرير (Sliders) -->
+                    <div class="space-y-4 pt-1">
+                        <div>
+                            <div class="flex justify-between text-xs font-bold text-slate-700 mb-1.5">
+                                <span>شدة الظلال (shadow-intensity)</span>
+                                <span id="shadow-val-label" class="font-ltr text-blue-600">1.0</span>
+                            </div>
+                            <input type="range" id="range-shadow" min="0" max="2" step="0.1" value="1" oninput="updateViewerAttributes()" class="w-full cursor-pointer">
+                        </div>
+
+                        <div>
+                            <div class="flex justify-between text-xs font-bold text-slate-700 mb-1.5">
+                                <span>سطوع الإضاءة (exposure)</span>
+                                <span id="exposure-val-label" class="font-ltr text-blue-600">1.0</span>
+                            </div>
+                            <input type="range" id="range-exposure" min="0.2" max="2" step="0.1" value="1" oninput="updateViewerAttributes()" class="w-full cursor-pointer">
+                        </div>
+
+                        <div>
+                            <label for="select-tonemapping" class="block text-xs font-bold text-slate-700 mb-1.5">معالجة الألوان (tone-mapping)</label>
+                            <select id="select-tonemapping" onchange="updateViewerAttributes()" class="w-full font-ltr text-xs px-3 py-2.5 rounded-xl border border-slate-300 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <option value="neutral" selected>neutral (الافتراضي الرسمي)</option>
+                                <option value="aces">aces</option>
+                                <option value="agx">agx</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- التبويب الثالث: كود القالب الرسمي جاهز للنسخ -->
+                <div id="tab-panel-code" class="tab-panel hidden bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h3 class="text-base font-bold text-slate-900">كود القالب الرسمي (iOS + Android)</h3>
+                            <p class="text-xs text-slate-500">يتحدث الكود تلقائياً حسب إعداداتك الحالية</p>
+                        </div>
+                        <button onclick="copyTemplateCode()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl shadow-sm transition-all flex items-center gap-1.5">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                            </svg>
+                            <span>نسخ الكود</span>
+                        </button>
+                    </div>
+
+                    <div class="relative">
+                        <textarea id="generated-code-box" readonly rows="15" class="w-full font-ltr text-xs leading-relaxed bg-slate-900 text-emerald-300 p-4 rounded-xl border border-slate-700 focus:outline-none resize-none"></textarea>
+                    </div>
+
+                    <div class="p-3.5 rounded-xl bg-amber-50 border border-amber-200 text-xs text-amber-900 space-y-1.5 leading-relaxed">
+                        <div class="font-bold">متطلبات التشغيل على الهواتف الذكية:</div>
+                        <ul class="list-disc list-inside space-y-1 text-[11px]">
+                            <li><strong>الأمان (HTTPS):</strong> يجب استضافة الصفحة وروابط النماذج على بروتوكول <code class="font-ltr font-bold">https://</code> ليعمل AR على Safari و Chrome.</li>
+                            <li><strong>نظام iOS:</strong> يدعم Safari و Chrome على الآيفون والآيباد عبر <code class="font-ltr font-bold">Apple AR Quick Look</code>.</li>
+                            <li><strong>نظام Android:</strong> يدعم متصفح Chrome عبر <code class="font-ltr font-bold">WebXR</code> و <code class="font-ltr font-bold">Google Scene Viewer</code>.</li>
+                        </ul>
+                    </div>
+                </div>
+<!-- ... existing code ... -->
+        // قائمة النماذج الرسمية من مستودع Google Model Viewer (تشمل GLB للأندرويد و USDZ للآيفون)
+        const PRESET_MODELS = {
+            astronaut: {
+                title: 'رائد الفضاء (Astronaut)',
+                src: 'https://modelviewer.dev/shared-assets/models/Astronaut.glb',
+                iosSrc: 'https://modelviewer.dev/shared-assets/models/Astronaut.usdz'
+            },
+            armstrong: {
+                title: 'بدلة نيل أرمسترونغ (Neil Armstrong)',
+                src: 'https://modelviewer.dev/shared-assets/models/NeilArmstrong.glb',
+                iosSrc: 'https://modelviewer.dev/shared-assets/models/NeilArmstrong.usdz'
+            },
+            horse: {
+                title: 'حصان متحرك (Horse)',
+                src: 'https://modelviewer.dev/shared-assets/models/Horse.glb',
+                iosSrc: 'https://modelviewer.dev/shared-assets/models/Horse.usdz'
+            },
+            chair: {
+                title: 'كرسي عصري للواقع المعزز (Chair)',
+                src: 'https://modelviewer.dev/shared-assets/models/Chair.glb',
+                iosSrc: 'https://modelviewer.dev/shared-assets/models/Chair.usdz'
+            }
+        };
+
+        let currentSrcForCode = PRESET_MODELS.astronaut.src;
+        let currentIosSrcForCode = PRESET_MODELS.astronaut.iosSrc;
+
+        // كشف نظام التشغيل الحالي للمستخدم (iOS / Android / Desktop)
+        function detectUserPlatform() {
+            const ua = navigator.userAgent || navigator.vendor || window.opera;
+            const badgeText = document.getElementById('os-detect-text');
+            
+            const isIOS = /iPad|iPhone|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+            const isAndroid = /android/i.test(ua);
+
+            if (isIOS) {
+                badgeText.textContent = 'جهازك: iOS (يدعم Apple AR Quick Look)';
+            } else if (isAndroid) {
+                badgeText.textContent = 'جهازك: Android (يدعم Scene Viewer / WebXR)';
+            } else {
+                badgeText.textContent = 'جهازك: سطح المكتب (افتح من هاتف لتجربة AR)';
+            }
+        }
+
+        // تحديث شارات حالة Android و iOS في الواجهة
+        function updatePlatformStatusBadges(glbLabel, usdzLabel, hasDedicatedUsdz) {
+            document.getElementById('glb-file-label').textContent = `الحالي: ${glbLabel}`;
+            document.getElementById('usdz-file-label').textContent = hasDedicatedUsdz
+                ? `الحالي: ${usdzLabel}`
+                : 'الحالي: تحويل تلقائي من GLB إلى USDZ على iOS';
+
+            const iosStatusText = document.getElementById('ios-status-text');
+            const iosBadgeFormat = document.getElementById('ios-badge-format');
+
+            if (hasDedicatedUsdz) {
+                iosStatusText.textContent = 'متصل بملف USDZ مخصص';
+                iosStatusText.className = 'text-[11px] text-blue-700 font-semibold';
+                iosBadgeFormat.textContent = '.USDZ';
+            } else {
+                iosStatusText.textContent = 'تحويل تلقائي من GLB (Auto-USDZ)';
+                iosStatusText.className = 'text-[11px] text-amber-700 font-semibold';
+                iosBadgeFormat.textContent = 'AUTO-USDZ';
+            }
+        }
+<!-- ... existing code ... -->
+        // 2. التعامل مع نقر زر AR على أجهزة سطح المكتب التي لا تدعم الكاميرا
+        document.getElementById('ar-button').addEventListener('click', () => {
+            if (!modelViewer.canActivateAR) {
+                showToast('لتجربة الواقع المعزز (AR)، افتح هذه الصفحة على هاتف iPhone (Safari/Chrome) أو هاتف Android (Chrome) عبر رابط HTTPS.');
+            }
+        });
+<!-- ... existing code ... -->
+            currentSrcForCode = model.src;
+            currentIosSrcForCode = model.iosSrc;
+            document.getElementById('current-model-title').textContent = model.title;
+            document.getElementById('glb-url-input').value = '';
+            document.getElementById('usdz-url-input').value = '';
+
+            updatePlatformStatusBadges(
+                model.src.split('/').pop(),
+                model.iosSrc ? model.iosSrc.split('/').pop() : '',
+                Boolean(model.iosSrc)
+            );
+
+            // تحديث البطاقة النشطة
+            document.querySelectorAll('.preset-card').forEach(card => {
+                card.classList.remove('border-2', 'border-blue-600', 'bg-blue-50/50');
+                card.classList.add('border', 'border-slate-200', 'bg-white');
+            });
+            const activeCard = document.getElementById(`preset-${key}`);
+            activeCard.classList.remove('border', 'border-slate-200', 'bg-white');
+            activeCard.classList.add('border-2', 'border-blue-600', 'bg-blue-50/50');
+
+            generateTemplateCode();
+            showToast(`تم تحميل نموذج "${model.title}" بنسختي iOS و Android`);
+        }
+
+        // 5. رفع ملف GLB محلي من جهاز المستخدم (Android & Web + Auto-USDZ for iOS)
+        function handleLocalGlbUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const objectUrl = URL.createObjectURL(file);
+            progressBar.classList.remove('hide');
+            updateBar.style.width = '15%';
+
+            modelViewer.setAttribute('src', objectUrl);
+            // إزالة ios-src القديم حتى لا يعرض نموذجاً مختلفاً على iOS، ليقوم العارض بالتحويل التلقائي
+            modelViewer.removeAttribute('ios-src');
+
+            currentSrcForCode = `models/${file.name}`;
+            currentIosSrcForCode = '';
+
+            document.getElementById('current-model-title').textContent = `ملف محلي: ${file.name}`;
+            updatePlatformStatusBadges(file.name, '', false);
+
+            document.querySelectorAll('.preset-card').forEach(card => {
+                card.classList.remove('border-2', 'border-blue-600', 'bg-blue-50/50');
+                card.classList.add('border', 'border-slate-200', 'bg-white');
+            });
+
+            generateTemplateCode();
+            showToast(`تم تحميل "${file.name}". يمكنك أيضاً إرفاق ملف .usdz مخصص للآيفون إذا رغبت.`);
+        }
+
+        // 6. رفع ملف USDZ محلي مخصص لأجهزة iOS (Apple AR Quick Look)
+        function handleLocalUsdzUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const objectUrl = URL.createObjectURL(file);
+            modelViewer.setAttribute('ios-src', objectUrl);
+            currentIosSrcForCode = `models/${file.name}`;
+
+            const currentGlbName = document.getElementById('glb-file-label').textContent.replace('الحالي: ', '');
+            updatePlatformStatusBadges(currentGlbName, file.name, true);
+
+            generateTemplateCode();
+            showToast(`تم ربط ملف iOS Quick Look "${file.name}" بنجاح!`);
+        }
+
+        // 7. تحميل روابط مخصصة لـ GLB (Android) و USDZ (iOS)
+        function applyCustomModels() {
+            const glbUrl = document.getElementById('glb-url-input').value.trim();
+            const usdzUrl = document.getElementById('usdz-url-input').value.trim();
+
+            if (!glbUrl && !usdzUrl) {
+                showToast('يرجى إدخال رابط .glb للأندرويد أو رابط .usdz للآيفون أولاً.');
+                return;
+            }
+
+            if (glbUrl) {
+                progressBar.classList.remove('hide');
+                updateBar.style.width = '15%';
+                modelViewer.setAttribute('src', glbUrl);
+                currentSrcForCode = glbUrl;
+                document.getElementById('current-model-title').textContent = 'نموذج مخصص (Custom URL)';
+            }
+
+            if (usdzUrl) {
+                modelViewer.setAttribute('ios-src', usdzUrl);
+                currentIosSrcForCode = usdzUrl;
+            } else if (glbUrl) {
+                modelViewer.removeAttribute('ios-src');
+                currentIosSrcForCode = '';
+            }
+
+            const glbName = glbUrl ? glbUrl.split('/').pop() : document.getElementById('glb-file-label').textContent.replace('الحالي: ', '');
+            const usdzName = usdzUrl ? usdzUrl.split('/').pop() : '';
+            updatePlatformStatusBadges(glbName, usdzName, Boolean(usdzUrl));
+
+            generateTemplateCode();
+            showToast('تم تحديث روابط النماذج لنظامي Android و iOS بنجاح!');
+        }
+
+        // 8. تحديث خصائص العارض (AR Placement, AR Scale, الإضاءة، الظلال، الدوران)
+        function updateViewerAttributes() {
+            const arPlacement = document.getElementById('select-ar-placement').value;
+            const arScale = document.getElementById('select-ar-scale').value;
+            const autoRotate = document.getElementById('toggle-autorotate').checked;
+            const cameraControls = document.getElementById('toggle-controls').checked;
+            const shadowIntensity = document.getElementById('range-shadow').value;
+            const exposure = document.getElementById('range-exposure').value;
+            const toneMapping = document.getElementById('select-tonemapping').value;
+
+            document.getElementById('shadow-val-label').textContent = Number(shadowIntensity).toFixed(1);
+            document.getElementById('exposure-val-label').textContent = Number(exposure).toFixed(1);
+
+            modelViewer.setAttribute('ar-placement', arPlacement);
+            modelViewer.setAttribute('ar-scale', arScale);
+
+            if (autoRotate) {
+                modelViewer.setAttribute('auto-rotate', '');
+            } else {
+                modelViewer.removeAttribute('auto-rotate');
+            }
+
+            if (cameraControls) {
+                modelViewer.setAttribute('camera-controls', '');
+            } else {
+                modelViewer.removeAttribute('camera-controls');
+            }
+
+            modelViewer.setAttribute('shadow-intensity', shadowIntensity);
+            modelViewer.setAttribute('exposure', exposure);
+            modelViewer.setAttribute('tone-mapping', toneMapping);
+
+            generateTemplateCode();
+        }
+<!-- ... existing code ... -->
+        // 10. توليد كود القالب الرسمي مطابقاً للإعدادات الحالية (يدعم iOS و Android)
+        function generateTemplateCode() {
+            const arPlacement = document.getElementById('select-ar-placement').value;
+            const arScale = document.getElementById('select-ar-scale').value;
+            const autoRotate = document.getElementById('toggle-autorotate').checked ? '\n  auto-rotate' : '';
+            const cameraControls = document.getElementById('toggle-controls').checked ? '\n  camera-controls' : '';
+            const shadowIntensity = document.getElementById('range-shadow').value;
+            const exposure = document.getElementById('range-exposure').value;
+            const toneMapping = document.getElementById('select-tonemapping').value;
+            const iosAttr = currentIosSrcForCode ? `\n  ios-src="${currentIosSrcForCode}"` : '';
+
+            const template = `<!-- 1. تحميل مكتبة Google Model Viewer الرسمية v4.0.0 -->
+<script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js"><\/script>
+
+<!-- 2. مكون عرض النموذج ثلاثي الأبعاد والواقع المعزز لنظامي iOS و Android -->
+<model-viewer
+  src="${currentSrcForCode}"${iosAttr}
+  alt="نموذج ثلاثي الأبعاد مع دعم الواقع المعزز على iOS و Android"
+  ar
+  ar-modes="webxr scene-viewer quick-look"
+  ar-placement="${arPlacement}"
+  ar-scale="${arScale}"${cameraControls}
+  touch-action="pan-y"
+  tone-mapping="${toneMapping}"
+  shadow-intensity="${shadowIntensity}"
+  exposure="${exposure}"${autoRotate}
+  style="width: 100%; height: 500px;"
+>
+  <!-- شريط تقدم التحميل الرسمي -->
+  <div class="progress-bar" slot="progress-bar">
+    <div class="update-bar"></div>
+  </div>
+
+  <!-- زر تفعيل الواقع المعزز المخصص -->
+  <button slot="ar-button" id="ar-button">
+    عرض في مساحتك - AR
+  </button>
+</model-viewer>`;
+
+            codeBox.value = template;
+        }
+<!-- ... existing code ... -->
+        // تهيئة الكود وفحص نظام التشغيل عند تحميل الصفحة
+        window.addEventListener('DOMContentLoaded', () => {
+            detectUserPlatform();
+            generateTemplateCode();
+        });
+    </script>
+</body>
 </html>
